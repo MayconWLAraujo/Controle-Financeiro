@@ -235,8 +235,13 @@ async def get_dashboard_summary():
     current_year = current_date.replace(month=1, day=1)
     
     # Get all transactions
-    transactions = await db.transactions.find().to_list(10000)
-    transactions = [parse_from_mongo(t) for t in transactions]
+    transactions_raw = await db.transactions.find().to_list(10000)
+    transactions = []
+    for t in transactions_raw:
+        # Remove MongoDB ObjectId and convert dates
+        t.pop('_id', None)
+        parsed_t = parse_from_mongo(t)
+        transactions.append(parsed_t)
     
     # Calculate totals
     total_income = sum(t['amount'] for t in transactions if t['type'] == 'income')
@@ -255,8 +260,13 @@ async def get_dashboard_summary():
             category_spending[t['category_id']] += t['amount']
     
     # Get categories
-    categories = await db.categories.find().to_list(1000)
-    categories_dict = {c['id']: c for c in categories}
+    categories_raw = await db.categories.find().to_list(1000)
+    categories = []
+    categories_dict = {}
+    for c in categories_raw:
+        c.pop('_id', None)  # Remove ObjectId
+        categories.append(c)
+        categories_dict[c['id']] = c
     
     # Format category spending with names
     category_data = []
@@ -268,21 +278,30 @@ async def get_dashboard_summary():
                 'color': categories_dict[cat_id]['color']
             })
     
-    # Get recent transactions (last 10)
+    # Get recent transactions (last 10) - clean for JSON serialization
     recent_transactions = sorted(transactions, key=lambda x: x['date'], reverse=True)[:10]
+    clean_recent_transactions = []
     for t in recent_transactions:
+        clean_t = dict(t)  # Make a copy
+        # Convert date to string for JSON serialization
+        if isinstance(clean_t.get('date'), date):
+            clean_t['date'] = clean_t['date'].isoformat()
+        if isinstance(clean_t.get('created_at'), datetime):
+            clean_t['created_at'] = clean_t['created_at'].isoformat()
+        
         if t['category_id'] in categories_dict:
-            t['category_name'] = categories_dict[t['category_id']]['name']
+            clean_t['category_name'] = categories_dict[t['category_id']]['name']
+        clean_recent_transactions.append(clean_t)
     
     return {
-        "total_balance": balance,
-        "total_income": total_income,
-        "total_expenses": total_expenses,
-        "monthly_balance": monthly_balance,
-        "monthly_income": monthly_income,
-        "monthly_expenses": monthly_expenses,
+        "total_balance": float(balance),
+        "total_income": float(total_income),
+        "total_expenses": float(total_expenses),
+        "monthly_balance": float(monthly_balance),
+        "monthly_income": float(monthly_income),
+        "monthly_expenses": float(monthly_expenses),
         "category_spending": category_data,
-        "recent_transactions": recent_transactions
+        "recent_transactions": clean_recent_transactions
     }
 
 async def check_category_limits(category_id: str, transaction_date: date):
