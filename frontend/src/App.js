@@ -57,7 +57,8 @@ const ThemeProvider = ({ children }) => {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-function App() {
+function AppContent() {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -131,41 +132,97 @@ function App() {
   const unreadAlertsCount = alerts.filter(alert => !alert.is_read).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-gray-900 to-gray-800 text-white' 
+        : 'bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900'
+    }`}>
       <BrowserRouter>
         <div className="container mx-auto px-4 py-6 max-w-7xl">
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">Controle Financeiro</h1>
-                <p className="text-slate-600">Gerencie suas finanças de forma inteligente</p>
+                <h1 className={`text-3xl font-bold mb-2 ${
+                  isDarkMode ? 'text-white' : 'text-slate-900'
+                }`}>
+                  Controle Financeiro
+                </h1>
+                <p className={isDarkMode ? 'text-gray-300' : 'text-slate-600'}>
+                  Gerencie suas finanças de forma inteligente
+                </p>
               </div>
-              <Button 
-                onClick={() => setShowTransactionForm(true)}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
-              >
-                <PlusCircle className="w-4 h-4 mr-2" />
-                Nova Transação
-              </Button>
+              
+              <div className="flex items-center gap-4">
+                {/* Theme Toggle */}
+                <div className="flex items-center gap-3">
+                  <Sun className={`w-4 h-4 ${isDarkMode ? 'text-gray-400' : 'text-yellow-500'}`} />
+                  <Switch 
+                    checked={isDarkMode}
+                    onCheckedChange={toggleTheme}
+                    className="data-[state=checked]:bg-blue-600"
+                  />
+                  <Moon className={`w-4 h-4 ${isDarkMode ? 'text-blue-400' : 'text-gray-400'}`} />
+                </div>
+                
+                <Button 
+                  onClick={() => setShowTransactionForm(true)}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
+                >
+                  <PlusCircle className="w-4 h-4 mr-2" />
+                  Nova Transação
+                </Button>
+              </div>
             </div>
 
             {/* Navigation Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4 lg:w-fit">
-                <TabsTrigger value="dashboard" className="flex items-center gap-2">
+              <TabsList className={`grid w-full grid-cols-4 lg:w-fit ${
+                isDarkMode 
+                  ? 'bg-gray-800 border-gray-700' 
+                  : 'bg-white border-slate-200'
+              }`}>
+                <TabsTrigger 
+                  value="dashboard" 
+                  className={`flex items-center gap-2 ${
+                    isDarkMode 
+                      ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-300' 
+                      : 'data-[state=active]:bg-slate-100 data-[state=active]:text-slate-900'
+                  }`}
+                >
                   <Home className="w-4 h-4" />
                   Dashboard
                 </TabsTrigger>
-                <TabsTrigger value="categories" className="flex items-center gap-2">
+                <TabsTrigger 
+                  value="categories" 
+                  className={`flex items-center gap-2 ${
+                    isDarkMode 
+                      ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-300' 
+                      : 'data-[state=active]:bg-slate-100 data-[state=active]:text-slate-900'
+                  }`}
+                >
                   <Settings className="w-4 h-4" />
                   Categorias
                 </TabsTrigger>
-                <TabsTrigger value="goals" className="flex items-center gap-2">
+                <TabsTrigger 
+                  value="goals" 
+                  className={`flex items-center gap-2 ${
+                    isDarkMode 
+                      ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-300' 
+                      : 'data-[state=active]:bg-slate-100 data-[state=active]:text-slate-900'
+                  }`}
+                >
                   <Target className="w-4 h-4" />
                   Metas
                 </TabsTrigger>
-                <TabsTrigger value="alerts" className="flex items-center gap-2 relative">
+                <TabsTrigger 
+                  value="alerts" 
+                  className={`flex items-center gap-2 relative ${
+                    isDarkMode 
+                      ? 'data-[state=active]:bg-gray-700 data-[state=active]:text-white text-gray-300' 
+                      : 'data-[state=active]:bg-slate-100 data-[state=active]:text-slate-900'
+                  }`}
+                >
                   <Bell className="w-4 h-4" />
                   Alertas
                   {unreadAlertsCount > 0 && (
@@ -213,7 +270,9 @@ function App() {
           {/* Transaction Form Modal */}
           {showTransactionForm && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-              <div className="bg-white rounded-xl p-6 w-full max-w-md">
+              <div className={`rounded-xl p-6 w-full max-w-md ${
+                isDarkMode ? 'bg-gray-800' : 'bg-white'
+              }`}>
                 <TransactionForm 
                   categories={categories}
                   onSuccess={() => {
@@ -232,6 +291,14 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 
