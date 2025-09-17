@@ -9,6 +9,7 @@ import TransactionForm from './components/TransactionForm';
 import CategoriesManager from './components/CategoriesManager';
 import GoalsManager from './components/GoalsManager';
 import AlertsPanel from './components/AlertsPanel';
+import ExportData from './components/ExportData';
 
 // UI Components
 import { Button } from "./components/ui/button";
