@@ -341,6 +341,82 @@ async def check_category_limits(category_id: str, transaction_date: date):
         
         await db.alerts.insert_one(prepare_for_mongo(alert.dict()))
 
+# Export/Import endpoints
+@api_router.get("/export/data")
+async def export_all_data():
+    """Export all user data in JSON format"""
+    try:
+        # Get all data
+        categories_raw = await db.categories.find().to_list(10000)
+        transactions_raw = await db.transactions.find().to_list(10000)
+        goals_raw = await db.goals.find().to_list(10000)
+        alerts_raw = await db.alerts.find().to_list(10000)
+        
+        # Clean data (remove MongoDB _id and parse dates)
+        categories = []
+        for c in categories_raw:
+            c.pop('_id', None)
+            categories.append(parse_from_mongo(c))
+        
+        transactions = []
+        for t in transactions_raw:
+            t.pop('_id', None)
+            parsed_t = parse_from_mongo(t)
+            # Convert dates to ISO strings for JSON serialization
+            if isinstance(parsed_t.get('date'), date):
+                parsed_t['date'] = parsed_t['date'].isoformat()
+            if isinstance(parsed_t.get('created_at'), datetime):
+                parsed_t['created_at'] = parsed_t['created_at'].isoformat()
+            transactions.append(parsed_t)
+        
+        goals = []
+        for g in goals_raw:
+            g.pop('_id', None)
+            parsed_g = parse_from_mongo(g)
+            # Convert dates to ISO strings for JSON serialization
+            if isinstance(parsed_g.get('target_date'), date):
+                parsed_g['target_date'] = parsed_g['target_date'].isoformat()
+            if isinstance(parsed_g.get('created_at'), datetime):
+                parsed_g['created_at'] = parsed_g['created_at'].isoformat()
+            goals.append(parsed_g)
+        
+        alerts = []
+        for a in alerts_raw:
+            a.pop('_id', None)
+            parsed_a = parse_from_mongo(a)
+            # Convert dates to ISO strings for JSON serialization
+            if isinstance(parsed_a.get('date'), date):
+                parsed_a['date'] = parsed_a['date'].isoformat()
+            if isinstance(parsed_a.get('created_at'), datetime):
+                parsed_a['created_at'] = parsed_a['created_at'].isoformat()
+            alerts.append(parsed_a)
+        
+        # Create export data structure
+        export_data = {
+            "export_info": {
+                "export_date": datetime.now(timezone.utc).isoformat(),
+                "app_name": "Controle Financeiro",
+                "version": "1.0"
+            },
+            "data": {
+                "categories": categories,
+                "transactions": transactions,
+                "goals": goals,
+                "alerts": alerts
+            },
+            "summary": {
+                "total_categories": len(categories),
+                "total_transactions": len(transactions),
+                "total_goals": len(goals),
+                "total_alerts": len(alerts)
+            }
+        }
+        
+        return export_data
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error exporting data: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
