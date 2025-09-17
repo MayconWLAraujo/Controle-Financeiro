@@ -156,6 +156,20 @@ function AppContent() {
               </div>
               
               <div className="flex items-center gap-4">
+                {/* Export Button */}
+                <Button
+                  onClick={() => setShowExportModal(true)}
+                  variant="outline"
+                  className={`px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2 ${
+                    isDarkMode 
+                      ? 'border-gray-600 text-gray-300 hover:bg-gray-800' 
+                      : 'border-slate-300 text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <Download className="w-4 h-4" />
+                  Exportar
+                </Button>
+                
                 {/* Theme Toggle */}
                 <div className="flex items-center gap-3">
                   <Sun className={`w-4 h-4 ${isDarkMode ? 'text-gray-400' : 'text-yellow-500'}`} />
