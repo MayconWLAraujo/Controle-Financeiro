@@ -29,9 +29,9 @@ const Dashboard = ({ data, categories, onRefresh }) => {
   };
 
   const getBalanceColor = (balance) => {
-    if (balance > 0) return 'text-emerald-600';
-    if (balance < 0) return 'text-red-600';
-    return 'text-slate-600';
+    if (balance > 0) return 'text-emerald-600 dark:text-emerald-400';
+    if (balance < 0) return 'text-red-600 dark:text-red-400';
+    return 'text-slate-600 dark:text-slate-400';
   };
 
   return (
@@ -40,14 +40,14 @@ const Dashboard = ({ data, categories, onRefresh }) => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card className="finance-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Saldo Total</CardTitle>
-            <DollarSign className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">Saldo Total</CardTitle>
+            <DollarSign className="h-4 w-4 text-slate-400 dark:text-slate-500" />
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${getBalanceColor(data.total_balance)}`}>
               {formatCurrency(data.total_balance)}
             </div>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Receitas - Gastos
             </p>
           </CardContent>
@@ -55,14 +55,14 @@ const Dashboard = ({ data, categories, onRefresh }) => {
 
         <Card className="finance-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Receitas (Mês)</CardTitle>
-            <TrendingUp className="h-4 w-4 text-emerald-500" />
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">Receitas (Mês)</CardTitle>
+            <TrendingUp className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-600">
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
               {formatCurrency(data.monthly_income)}
             </div>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Total: {formatCurrency(data.total_income)}
             </p>
           </CardContent>
@@ -70,14 +70,14 @@ const Dashboard = ({ data, categories, onRefresh }) => {
 
         <Card className="finance-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Gastos (Mês)</CardTitle>
-            <TrendingDown className="h-4 w-4 text-red-500" />
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">Gastos (Mês)</CardTitle>
+            <TrendingDown className="h-4 w-4 text-red-500 dark:text-red-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-red-600 dark:text-red-400">
               {formatCurrency(data.monthly_expenses)}
             </div>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Total: {formatCurrency(data.total_expenses)}
             </p>
           </CardContent>
@@ -85,14 +85,14 @@ const Dashboard = ({ data, categories, onRefresh }) => {
 
         <Card className="finance-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">Saldo Mensal</CardTitle>
-            <Target className="h-4 w-4 text-blue-500" />
+            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">Saldo Mensal</CardTitle>
+            <Target className="h-4 w-4 text-blue-500 dark:text-blue-400" />
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${getBalanceColor(data.monthly_balance)}`}>
               {formatCurrency(data.monthly_balance)}
             </div>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Este mês
             </p>
           </CardContent>
@@ -103,7 +103,7 @@ const Dashboard = ({ data, categories, onRefresh }) => {
         {/* Category Spending */}
         <Card className="finance-card">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-900">
+            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               Gastos por Categoria (Mês)
             </CardTitle>
           </CardHeader>
@@ -120,19 +120,19 @@ const Dashboard = ({ data, categories, onRefresh }) => {
                         className="category-dot"
                         style={{ backgroundColor: category.color }}
                       ></div>
-                      <span className="text-sm font-medium text-slate-700">
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                         {category.category}
                       </span>
                     </div>
-                    <span className="text-sm font-semibold text-slate-900">
+                    <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {formatCurrency(category.amount)}
                     </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-slate-500">
-                <AlertTriangle className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+              <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+                <AlertTriangle className="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
                 <p>Nenhum gasto registrado este mês</p>
               </div>
             )}
@@ -142,7 +142,7 @@ const Dashboard = ({ data, categories, onRefresh }) => {
         {/* Recent Transactions */}
         <Card className="finance-card">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-900">
+            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               Transações Recentes
             </CardTitle>
           </CardHeader>
@@ -153,20 +153,20 @@ const Dashboard = ({ data, categories, onRefresh }) => {
                   <div key={index} className="transaction-item flex items-center justify-between py-2 px-3 rounded-lg">
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-slate-900">
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
                           {transaction.description}
                         </p>
                         <span className={`text-sm font-semibold ${
-                          transaction.type === 'income' ? 'text-emerald-600' : 'text-red-600'
+                          transaction.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
                         }`}>
                           {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between mt-1">
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
                           {transaction.category_name || 'Sem categoria'}
                         </span>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-slate-400 dark:text-slate-500">
                           {new Date(transaction.date).toLocaleDateString('pt-BR')}
                         </span>
                       </div>
@@ -175,8 +175,8 @@ const Dashboard = ({ data, categories, onRefresh }) => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-slate-500">
-                <DollarSign className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+              <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+                <DollarSign className="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
                 <p>Nenhuma transação encontrada</p>
               </div>
             )}
