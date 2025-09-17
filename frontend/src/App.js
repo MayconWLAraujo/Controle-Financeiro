@@ -62,6 +62,7 @@ function AppContent() {
   const { isDarkMode, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showTransactionForm, setShowTransactionForm] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [goals, setGoals] = useState([]);
