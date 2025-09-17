@@ -16,7 +16,7 @@ import { Button } from "./components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { Switch } from "./components/ui/switch";
-import { PlusCircle, Home, Target, Settings, Bell, Sun, Moon } from "lucide-react";
+import { PlusCircle, Home, Target, Settings, Bell, Sun, Moon, Download } from "lucide-react";
 
 // Theme Context
 const ThemeContext = createContext();
